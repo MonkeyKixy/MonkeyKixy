@@ -1,0 +1,521 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MonkeyKixy — Jungle to the Moon</title>
+<meta name="description" content="MonkeyKixy: a fun Bitcoin-native meme adventure. From the jungle to the moon."/>
+<meta property="og:title" content="MonkeyKixy — Jungle to the Moon"/>
+<meta property="og:description" content="Kixy heard whispers of Bitcoin in the jungle... and took off for the moon."/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary_large_image"/>
+
+<style>
+:root{
+  --bg:#061013; --bg2:#0a1617;
+  --card:#0f1c1f; --line:#183033;
+  --txt:#e8fbff; --muted:#9ab7bd;
+  --pri:#5fe1a0; --sec:#3fb8ff; --gold:#ffc23a;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+a{color:var(--sec);text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+small,.muted{color:var(--muted)}
+
+/* Topbar */
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(8px);background:rgba(7,13,14,.85);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+.brand{display:flex;gap:10px;align-items:center;font-weight:800}
+.brand .kixy-mini{width:28px;height:28px;display:inline-block}
+.links{display:flex;gap:16px;flex-wrap:wrap}
+.actions{display:flex;gap:10px;align-items:center}
+.btn{display:inline-block;border:1px solid var(--line);padding:10px 14px;border-radius:12px;background:transparent;color:var(--txt)}
+.btn.ghost{background:transparent}
+.btn.primary{background:var(--pri);color:#022018;border-color:var(--pri);font-weight:800}
+.btn.xl{font-size:18px;padding:14px 18px;border-radius:14px}
+
+/* Panels */
+.panel{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;margin:16px 0}
+.panel.alt{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+.hero{position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center}
+h1{font-size:42px;line-height:1.1;margin:0 0 10px}
+.grad{background:linear-gradient(90deg,#5fe1a0,#3fb8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{color:var(--muted);font-weight:600;margin-top:4px}
+.lead{opacity:.95}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat .label{color:var(--muted);font-size:12px;margin-bottom:6px}
+.stat .value{font-size:18px;font-weight:800}
+.cta-row{display:flex;gap:10px;margin:12px 0 6px}
+
+/* ===== Hero illustration (statique) ===== */
+.hero-figure{
+  position:relative;
+  justify-self:end;
+  width:min(46vw,560px);
+  pointer-events:none;
+}
+.hero-figure::before{
+  content:"";
+  position:absolute; inset:-6% -4% -8% -4%;
+  border-radius:50%;
+  background: radial-gradient(closest-side, rgba(255,255,255,.09), rgba(255,255,255,.04) 35%, rgba(0,0,0,0) 70%);
+  filter:blur(.2px);
+}
+.hero-figure img{
+  position:relative; z-index:1;
+  display:block; width:100%; height:auto;
+  object-fit:contain; object-position:center;
+  filter:drop-shadow(0 10px 24px rgba(0,0,0,.45));
+}
+
+/* Cards */
+.section-title{display:flex;align-items:center;gap:8px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.card .label{color:var(--muted);font-size:12px;margin-bottom:6px}
+.card .value{font-size:18px;font-weight:800}
+
+/* Presale progress + fusée */
+.progress-area{position:relative;margin-top:14px;padding:10px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#071417,#061013)}
+.track{position:relative;height:16px;border-radius:10px;background:#0a1719;overflow:hidden;border:1px solid var(--line)}
+.bar{position:absolute;left:0;top:0;height:100%;width:0%;background:linear-gradient(90deg,#3fb8ff,#5fe1a0)}
+.rocket{position:absolute;top:-44px;left:0;transform:translateX(0);transition:transform .6s ease}
+.rocket img{width:64px;height:auto;display:block;filter:drop-shadow(0 6px 16px rgba(0,0,0,.4))}
+
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:200}
+.modal.hidden{display:none}
+.modal-panel{width:min(980px,92vw);height:min(720px,86vh);background:#0c1718;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line)}
+.modal-head h3{margin:0}
+.modal .icon{border:0;background:transparent;color:var(--txt);font-size:22px;cursor:pointer}
+#transakFrame{flex:1;width:100%;border:0}
+
+/* Footer */
+.site-footer{padding:20px 0;border-top:1px solid var(--line);background:rgba(6,16,19,.7)}
+
+/* Jungle background layers */
+.bg{position:fixed;inset:0;z-index:-2;pointer-events:none}
+.jungle-gradient{
+  background:
+    radial-gradient(1200px 520px at 70% -10%, rgba(63,184,255,.16), transparent 60%),
+    radial-gradient(1200px 540px at 20% -10%, rgba(95,225,160,.18), transparent 60%),
+    linear-gradient(180deg,var(--bg2),var(--bg));
+}
+
+/* Vignes latérales */
+.vines-left::before,.vines-right::before{
+  content:""; position:absolute; inset:-10% 0 0 0; opacity:.25; z-index:-1;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cg fill='none' stroke='%23182e2f' stroke-width='2'%3E%3Cpath d='M20 560 C 80 420, 220 380, 320 560'/%3E%3Cpath d='M60 520 C 160 360, 300 340, 420 520'/%3E%3Cpath d='M140 560 C 240 380, 380 360, 520 560'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat; background-size:600px 600px;
+}
+.vines-left{transform:translateX(-10%);filter:blur(0.2px)}
+.vines-right{transform:translateX(10%)}
+
+/* Feuilles (fond) */
+.bg.leaves::before{
+  content:""; position:absolute; inset:0; opacity:.35;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800'%3E%3Cg fill='%23112b26' opacity='0.95'%3E%3Cpath d='M120,640 C80,560 120,500 220,520 C260,460 340,450 380,520 C460,510 520,540 520,620 C470,640 410,660 340,662 C270,664 200,656 120,640 Z'/%3E%3Cpath d='M540,700 C520,640 560,580 640,580 C680,520 760,520 780,600 C730,630 680,650 620,662 C590,668 560,690 540,700 Z'/%3E%3Cpath d='M40,420 C80,380 160,360 220,380 C260,320 340,310 400,360 C460,330 540,340 580,380 C520,400 460,420 400,430 C300,448 200,446 120,440 C80,436 60,428 40,420 Z'/%3E%3C/g%3E%3Cg fill='%2314362f' opacity='0.8'%3E%3Cpath d='M260,720 C300,660 380,650 420,690 C470,670 540,690 560,740 C520,748 470,756 420,758 C360,762 300,746 260,720 Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat; background-size:700px 700px; filter:blur(0.2px);
+}
+
+/* Lianes supérieures (canopée) */
+.bg.canopy{ z-index:-1; }
+.bg.canopy::before{
+  content:"";
+  position:absolute; left:-8vw; right:-8vw; top:-2vw; height:42vh;
+  opacity:.55; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1400 400'%3E%3Cg opacity='0.9' fill='none' stroke='%231c6a57' stroke-width='8' stroke-linecap='round'%3E%3Cpath d='M80 0 C120 120 70 220 140 360'/%3E%3Cpath d='M260 0 C320 140 260 220 320 360'/%3E%3Cpath d='M460 0 C520 160 520 200 560 360'/%3E%3Cpath d='M720 0 C760 140 700 220 760 360'/%3E%3Cpath d='M980 0 C1040 160 980 220 1040 360'/%3E%3Cpath d='M1220 0 C1260 140 1200 220 1260 360'/%3E%3C/g%3E%3Cg fill='%23217964' opacity='0.8'%3E%3Cellipse cx='110' cy='160' rx='20' ry='10' transform='rotate(-20 110 160)'/%3E%3Cellipse cx='300' cy='180' rx='22' ry='12' transform='rotate(12 300 180)'/%3E%3Cellipse cx='520' cy='190' rx='22' ry='12' transform='rotate(-10 520 190)'/%3E%3Cellipse cx='740' cy='170' rx='22' ry='12' transform='rotate(8 740 170)'/%3E%3Cellipse cx='1000' cy='190' rx='22' ry='12' transform='rotate(-14 1000 190)'/%3E%3Cellipse cx='1240' cy='170' rx='22' ry='12' transform='rotate(10 1240 170)'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat-x; background-size:1200px auto;
+}
+
+/* Responsive */
+@media(max-width:980px){
+  .hero-grid{grid-template-columns:1fr}
+  .cards{grid-template-columns:1fr 1fr}
+  .hero-figure{width:min(76vw,560px);justify-self:center;margin-top:10px}
+  .hero-figure::before{inset:-10% -12% -12% -12%}
+}
+</style>
+</head>
+<body>
+
+<!-- Arrière-plan jungle (avec lianes) -->
+<div class="bg jungle-gradient"></div>
+<div class="bg vines-left"></div>
+<div class="bg vines-right"></div>
+<div class="bg leaves"></div>
+<div class="bg canopy"></div>
+
+<header class="topbar">
+  <div class="wrap nav">
+    <div class="brand">
+      <!-- mini tête de Kixy -->
+      <svg class="kixy-mini" viewBox="0 0 200 200" aria-hidden="true">
+        <defs><radialGradient id="furMini" cx="50%" cy="45%" r="60%">
+          <stop offset="0%" stop-color="#FFD08A"/><stop offset="100%" stop-color="#D07B2B"/>
+        </radialGradient></defs>
+        <circle cx="100" cy="110" r="70" fill="url(#furMini)"/>
+        <circle cx="75" cy="95" r="12" fill="#000" opacity="0.85"/>
+        <circle cx="125" cy="95" r="12" fill="#000" opacity="0.85"/>
+        <ellipse cx="100" cy="135" rx="22" ry="10" fill="#000" opacity="0.9"/>
+      </svg>
+      MonkeyKixy
+    </div>
+
+    <nav class="links">
+      <a href="#story">Story</a>
+      <a href="#tokenomics">Tokenomics</a>
+      <a href="#presale">Presale</a>
+      <a href="#buy">How to buy</a>
+      <a href="#whitepaper">Whitepaper</a>
+      <a href="#community">Community</a>
+    </nav>
+
+    <div class="actions">
+      <a class="btn ghost" href="https://x.com/MonkeyKixy?t=pDBWrgnO8fFWrybxIx6vUg&s=09" target="_blank" rel="noreferrer">X (Twitter)</a>
+      <a class="btn ghost" href="https://www.tiktok.com/@monkeykixy?_t=ZN-8z44psp7u58&_r=1" target="_blank" rel="noreferrer">TikTok</a>
+      <button id="connectBtn" class="btn">Connect Wallet</button>
+      <button id="openBuy" class="btn primary">Buy</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HERO -->
+  <section class="hero panel">
+    <div class="hero-grid">
+      <!-- texte -->
+      <div class="hero-copy">
+        <h1>
+          <span class="grad">MonkeyKixy</span> — Jungle to the Moon
+          <div id="localizedTag" class="tagline">Kixy on the road to $1</div>
+        </h1>
+        <p class="lead">
+          Kixy lived deep in a neon jungle. One night the canopy hummed with a new sound: <em>Bitcoin</em>.
+          Curious and fearless, Kixy followed the signal across vines and valleys, learned the ways of inscriptions,
+          rallied friends, and built a rocket. Next stop: the moon.
+        </p>
+        <div class="cta-row">
+          <a class="btn primary" href="#presale">Join Presale</a>
+          <a class="btn ghost" href="#whitepaper">Read Whitepaper</a>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="label">Connected address</div>
+            <div id="addr" class="value">—</div>
+          </div>
+          <div class="stat">
+            <div class="label">BTC balance</div>
+            <div id="btcBal" class="value">—</div>
+          </div>
+          <div class="stat">
+            <div class="label">KIXY (BRC-20)</div>
+            <div id="kixyBal" class="value">—</div>
+            <div class="hint muted" style="font-size:12px">Balance fetch uses your indexer if configured.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- illustration statique -->
+      <figure class="hero-figure">
+        <img src="assets/kixy-coin.png" alt="Kixy holding the coin" width="1000" height="1200" />
+      </figure>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section id="story" class="panel alt">
+    <h2 class="section-title">The Story</h2>
+    <p>
+      Whispers of Bitcoin echoed through the jungle. Kixy tuned in, learned to inscribe on chain,
+      and started sharing bananas of knowledge with every traveler. MonkeyKixy is that story written in code:
+      a light-hearted meme adventure powered by a real community.
+    </p>
+  </section>
+
+  <!-- TOKENOMICS -->
+  <section id="tokenomics" class="panel">
+    <h2 class="section-title">Tokenomics</h2>
+    <div class="cards">
+      <div class="card"><div class="label">Ticker</div><div class="value">KIXY</div></div>
+      <div class="card"><div class="label">Max Supply</div><div class="value">12,345,678,910 KIXY</div></div>
+      <div class="card"><div class="label">Network</div><div class="value">Bitcoin (Inscriptions)</div></div>
+      <div class="card"><div class="label">Distribution</div><div class="value">Community-first</div></div>
+    </div>
+    <p class="muted">Explorer links and distribution details will be published as features go live.</p>
+  </section>
+
+  <!-- PRESALE -->
+  <section id="presale" class="panel boom">
+    <h2 class="section-title">Presale</h2>
+
+    <div class="progress-area">
+      <div class="track"><div id="bar" class="bar"></div></div>
+      <!-- >>> KIXY SUR LA FUSÉE (image PNG transparente) -->
+      <div id="rocket" class="rocket" aria-hidden="true">
+        <img src="assets/kixy-rocket.png" alt="Kixy riding a rocket" />
+      </div>
+      <div class="progress-meta">
+        <span>Progress: <b id="progressPct">0%</b></span>
+        <span>Sold: <b id="soldLbl">0</b> / <b id="capLbl">—</b> KIXY</span>
+      </div>
+    </div>
+
+    <div class="presale-wrap">
+      <div class="presale-number">
+        <div class="label">Tokens in presale</div>
+        <div class="value big" id="presaleCount">—</div>
+        <div class="muted" style="margin-top:6px">Price: <b id="priceUsd">—</b> / KIXY</div>
+      </div>
+      <div class="presale-cta">
+        <button id="openBuy2" class="btn primary xl">Buy with Transak</button>
+        <p class="muted">On-ramp opens in a modal. Your wallet address is prefilled after connect.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW TO BUY -->
+  <section id="buy" class="panel">
+    <h2 class="section-title">How to Buy</h2>
+    <ol class="steps">
+      <li>Install a compatible Bitcoin wallet (e.g., UniSat or Xverse).</li>
+      <li>Click <strong>Connect Wallet</strong> and approve.</li>
+      <li>Use the Transak widget to on-ramp and receive assets to your wallet.</li>
+    </ol>
+  </section>
+
+  <!-- WHITEPAPER -->
+  <section id="whitepaper" class="panel alt">
+    <h2 class="section-title">Whitepaper</h2>
+    <article class="whitepaper">
+      <h3>MonkeyKixy (KIXY) — 2025</h3>
+      <p><strong>Overview.</strong> MonkeyKixy is a playful Bitcoin-native meme token inspired by the journey from jungle curiosity to lunar ambition. It experiments with inscriptions and community-first participation.</p>
+      <p><strong>Vision.</strong> Build a vibrant tribe that coordinates memes, education, and open tools.</p>
+      <p><strong>Tokenomics.</strong> Ticker: KIXY. Max supply: 12,345,678,910. Network: Bitcoin inscriptions. Distribution: community-first.</p>
+      <p><strong>Acquisition.</strong> Phase 1: fair minting & OTC swaps. Phase 2: liquidity pools. Phase 3: on-ramp integrations (Transak/Monpay).</p>
+      <p><strong>Roadmap.</strong> Q3 2025: branding, site, community. Q4 2025: buy widget + listings. Q1 2026: creator program, ecosystem tools.</p>
+      <p><strong>Community.</strong> Decisions emerge from holders and builders proposing ideas, art, and tools.</p>
+    </article>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section id="community" class="panel">
+    <h2 class="section-title">Community</h2>
+    <p>Join the tribe and stay updated:</p>
+    <p class="socials">
+      <a class="btn ghost" href="https://x.com/MonkeyKixy?t=pDBWrgnO8fFWrybxIx6vUg&s=09" target="_blank" rel="noreferrer">X (Twitter)</a>
+      <a class="btn ghost" href="https://www.tiktok.com/@monkeykixy?_t=ZN-8z44psp7u58&_r=1" target="_blank" rel="noreferrer">TikTok</a>
+    </p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <small class="muted">© <span id="y"></span> MonkeyKixy</small>
+  </div>
+</footer>
+
+<!-- Modal Transak -->
+<div id="modal" class="modal hidden" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 id="modalTitle">Buy with Transak</h3>
+      <button id="closeModal" class="icon" aria-label="Close">✕</button>
+    </div>
+    <iframe id="transakFrame" title="Transak" allow="payment; camera; microphone" loading="lazy"></iframe>
+  </div>
+</div>
+
+<!-- Sats Connect (Xverse/Leather) -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/sats-connect/+esm"></script>
+
+<script>
+/** ========= CONFIG ========= **/
+const CONFIG = {
+  TRANSAK_API_KEY: "REPLACE_WITH_YOUR_TRANSAK_KEY",
+  SELLER_BTC_ADDRESS: "bc1qscg2hmyp6u6drqn7xrshw7x4nek3hytj9sxuat",
+  API_BASE: "/api",
+  PRICE_USD_PER_KIXY: 0.0001,
+  TOTAL_SUPPLY: 12345678910,
+  PRESALE_TOKENS: Math.floor(12345678910 * 0.10),
+  USD_TO_EUR: 0.92,
+  INDEXER_BTC_BAL: null
+};
+
+/** ========= STATE ========= **/
+let state = {
+  connected: null,
+  sold: 0, buyers: 0,
+  cap: CONFIG.PRESALE_TOKENS,
+  price_usd: CONFIG.PRICE_USD_PER_KIXY
+};
+
+/** ========= DOM helper ========= **/
+const $ = (s)=>document.querySelector(s);
+const short = (a)=> a ? (a.slice(0,6)+"…"+a.slice(-6)) : "—";
+const fmt = (n)=> (n??0).toLocaleString("en-US");
+
+/** ========= RENDER ========= **/
+function renderYear(){ $("#y").textContent = new Date().getFullYear(); }
+function renderProgress(){
+  $("#presaleCount").textContent = fmt(state.cap);
+  const prefersEUR = (navigator.language||"").toLowerCase().startsWith("fr");
+  const price = prefersEUR ? state.price_usd*CONFIG.USD_TO_EUR : state.price_usd;
+  const sym = prefersEUR ? "€" : "$";
+  $("#priceUsd").textContent = `${sym} ${price.toFixed(6)}`;
+  $("#soldLbl").textContent = fmt(state.sold);
+  $("#capLbl").textContent = fmt(state.cap);
+  const pct = Math.max(0, Math.min(100, Math.floor((state.sold/state.cap)*100)));
+  $("#progressPct").textContent = pct + "%";
+  $("#bar").style.width = pct + "%";
+
+  const track = document.querySelector(".track");
+  const rocket = $("#rocket");
+  // largeur réelle de l'image (fixée en CSS à 64px) pour un calcul robuste
+  const rocketW = rocket.querySelector("img")?.width || 64;
+  const W = track.clientWidth - rocketW;
+  rocket.style.transform = "translateX(" + (W * (pct/100)) + "px)";
+}
+
+/** ========= WALLET CONNECT ========= **/
+async function connectWallet(){
+  // UniSat
+  if (window.unisat?.requestAccounts) {
+    try{
+      const acc = await window.unisat.requestAccounts();
+      const address = acc[0];
+      state.connected = {address, type:"unisat"};
+      $("#addr").textContent = short(address);
+      fetchBtcBalance(address);
+      fetchKixyBalance(address);
+      return;
+    }catch(e){}
+  }
+  // Xverse/Leather via Sats-Connect
+  try{
+    const { request, AddressPurpose, BitcoinNetworkType } = await import("https://cdn.jsdelivr.net/npm/sats-connect/+esm");
+    await request("getAddresses", {
+      getAddressesPayload:{
+        purposes:[AddressPurpose.PAYMENT],
+        message:"Requesting payment address for MonkeyKixy",
+        network:{ type: BitcoinNetworkType.Mainnet }
+      },
+      onFinish:(res)=>{
+        const a = res?.addresses?.[0]?.address;
+        if (a){
+          state.connected = {address:a, type:"satsconnect"};
+          $("#addr").textContent = short(a);
+          fetchBtcBalance(a);
+          fetchKixyBalance(a);
+        }
+      },
+      onCancel:()=> alert("Wallet connection canceled")
+    });
+  }catch(e){
+    alert("Install UniSat or Xverse to connect.");
+  }
+}
+document.getElementById("connectBtn").addEventListener("click", connectWallet);
+
+/** ========= BALANCES ========= **/
+async function fetchBtcBalance(address){
+  if (!CONFIG.INDEXER_BTC_BAL){ $("#btcBal").textContent="—"; return; }
+  try{
+    const r = await fetch(`${CONFIG.INDEXER_BTC_BAL}/address/${address}`);
+    const j = await r.json();
+    const sats = (j.chain_stats?.funded_txo_sum - j.chain_stats?.spent_txo_sum) || 0;
+    $("#btcBal").textContent = (sats/1e8).toFixed(8) + " BTC";
+  }catch(e){ $("#btcBal").textContent="—"; }
+}
+async function fetchKixyBalance(address){
+  try{
+    const r = await fetch(`${CONFIG.API_BASE}/balance?address=${encodeURIComponent(address)}&ticker=KIXY`);
+    if (r.ok){
+      const j = await r.json();
+      $("#kixyBal").textContent = fmt(j.kixy||0);
+    }else{
+      $("#kixyBal").textContent = "—";
+    }
+  }catch(e){ $("#kixyBal").textContent = "—"; }
+}
+
+/** ========= PROGRESSION ========= **/
+async function fetchConfig(){
+  try{
+    const r = await fetch(`${CONFIG.API_BASE}/config`);
+    if (r.ok){
+      const j = await r.json();
+      state.cap = j.presale_tokens ?? CONFIG.PRESALE_TOKENS;
+      state.price_usd = j.price_usd ?? CONFIG.PRICE_USD_PER_KIXY;
+    }
+  }catch(e){}
+}
+async function fetchProgress(){
+  try{
+    const r = await fetch(`${CONFIG.API_BASE}/progress`);
+    if (r.ok){
+      const j = await r.json();
+      state.sold = j.sold ?? state.sold;
+      state.buyers = j.buyers ?? state.buyers;
+    }else{
+      const demo = Number(localStorage.getItem("kixy_demo_sold")||"0");
+      state.sold = Math.min(state.cap, demo);
+    }
+  }catch(e){
+    const demo = Number(localStorage.getItem("kixy_demo_sold")||"0");
+    state.sold = Math.min(state.cap, demo);
+  }
+  renderProgress();
+}
+window.demoSell = (q)=>{
+  const n = Math.min(state.cap, Number(localStorage.getItem("kixy_demo_sold")||"0") + (q||0));
+  localStorage.setItem("kixy_demo_sold", String(n));
+  fetchProgress();
+}
+
+/** ========= TRANSAK ========= **/
+function openTransak(){
+  const base = (location.hostname === "localhost" || location.hostname.endsWith(".test"))
+    ? "https://global-stg.transak.com/"
+    : "https://global.transak.com/";
+  if (!CONFIG.TRANSAK_API_KEY || CONFIG.TRANSAK_API_KEY.includes("REPLACE_")){
+    alert("Set your Transak API key in CONFIG.TRANSAK_API_KEY");
+    return;
+  }
+  const addr = state.connected?.address || "";
+  const orderId = (crypto?.randomUUID?.() || String(Date.now()));
+  const params = new URLSearchParams({
+    apiKey: CONFIG.TRANSAK_API_KEY,
+    defaultCryptoCurrency: "BTC",
+    network: "bitcoin",
+    walletAddress: addr,
+    themeColor: "01231b",
+    isFeeCalculationHidden: "true",
+    partnerOrderId: orderId,
+    redirectURL: location.origin + "/thank-you?order=" + orderId
+  });
+  document.getElementById("transakFrame").src = base + "?" + params.toString();
+  document.getElementById("modal").classList.remove("hidden");
+}
+document.getElementById("openBuy").addEventListener("click", openTransak);
+document.getElementById("openBuy2").addEventListener("click", openTransak);
+document.getElementById("closeModal").addEventListener("click", ()=>document.getElementById("modal").classList.add("hidden"));
+
+/** ========= INIT ========= **/
+document.addEventListener("DOMContentLoaded", async ()=>{
+  renderYear();
+  await fetchConfig();
+  await fetchProgress();
+  setInterval(fetchProgress, 15000);
+});
+// S'assure que l'image est bien chargée avant le premier calcul
+window.addEventListener("load", renderProgress);
+</script>
+</body>
+</html>
